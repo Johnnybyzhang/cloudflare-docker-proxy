@@ -7,17 +7,17 @@ const dockerHub = "https://registry-1.docker.io";
 
 const routes = {
   // production
-  ["docker." + CUSTOM_DOMAIN]: dockerHub,
-  ["quay." + CUSTOM_DOMAIN]: "https://quay.io",
-  ["gcr." + CUSTOM_DOMAIN]: "https://gcr.io",
-  ["k8s-gcr." + CUSTOM_DOMAIN]: "https://k8s.gcr.io",
-  ["k8s." + CUSTOM_DOMAIN]: "https://registry.k8s.io",
-  ["ghcr." + CUSTOM_DOMAIN]: "https://ghcr.io",
-  ["cloudsmith." + CUSTOM_DOMAIN]: "https://docker.cloudsmith.io",
-  ["ecr." + CUSTOM_DOMAIN]: "https://public.ecr.aws",
+  ["not-docker." + CUSTOM_DOMAIN]: dockerHub,
+  ["not-quay." + CUSTOM_DOMAIN]: "https://quay.io",
+  ["not-gcr." + CUSTOM_DOMAIN]: "https://gcr.io",
+  ["not-k8s-gcr." + CUSTOM_DOMAIN]: "https://k8s.gcr.io",
+  ["not-k8s." + CUSTOM_DOMAIN]: "https://registry.k8s.io",
+  ["not-ghcr." + CUSTOM_DOMAIN]: "https://ghcr.io",
+  ["not-cloudsmith." + CUSTOM_DOMAIN]: "https://docker.cloudsmith.io",
+  ["not-ecr." + CUSTOM_DOMAIN]: "https://public.ecr.aws",
 
   // staging
-  ["docker-staging." + CUSTOM_DOMAIN]: dockerHub,
+  ["not-docker-staging." + CUSTOM_DOMAIN]: dockerHub,
 };
 
 function routeByHosts(host) {
@@ -32,6 +32,28 @@ function routeByHosts(host) {
 
 async function handleRequest(request) {
   const url = new URL(request.url);
+  // 所有路径显示大横幅警示，除 Docker 镜像拉取 API 路径 (/v2) 之外
+  if (request.method === "GET" && !url.pathname.startsWith("/v2")) {
+    const html = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mirror Notice</title>
+  </head>
+  <body>
+    <div style="font-size:32px; font-weight:bold; color:red; text-align:center; margin:50px;">
+      This is a mirrored site intended to speed up image downloads, do not login
+    </div>
+    <div style="text-align:center; margin:20px;">
+      <a href="https://github.com/Johnnybyzhang/cloudflare-docker-proxy" target="_blank" style="font-size:18px; color:blue;">
+        View the GitHub Repository
+      </a>
+    </div>
+  </body>
+</html>`;
+    return new Response(html, { headers: { "Content-Type": "text/html;charset=UTF-8" } });
+  }
+
   const upstream = routeByHosts(url.hostname);
   if (upstream === "") {
     return new Response(
