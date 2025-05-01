@@ -17,13 +17,13 @@ CUSTOM_DOMAIN = "161024.xyz"
 [env.production]
 name = "cloudflare-docker-proxy"
 routes = [
-  { pattern = "docker.161024.xyz", custom_domain = true },
-  { pattern = "quay.161024.xyz", custom_domain = true },
-  { pattern = "gcr.161024.xyz", custom_domain = true },
-  { pattern = "k8s-gcr.161024.xyz", custom_domain = true },
-  { pattern = "k8s.161024.xyz", custom_domain = true },
-  { pattern = "ghcr.161024.xyz", custom_domain = true },
-  { pattern = "cloudsmith.161024.xyz", custom_domain = true },
+  { pattern = "not-docker.161024.xyz", custom_domain = true },
+  { pattern = "not-quay.161024.xyz", custom_domain = true },
+  { pattern = "not-gcr.161024.xyz", custom_domain = true },
+  { pattern = "not-k8s-gcr.161024.xyz", custom_domain = true },
+  { pattern = "not-k8s.161024.xyz", custom_domain = true },
+  { pattern = "not-ghcr.161024.xyz", custom_domain = true },
+  { pattern = "not-cloudsmith.161024.xyz", custom_domain = true },
 ]
 
 [env.production.vars]
@@ -32,7 +32,7 @@ TARGET_UPSTREAM = ""
 
 [env.staging]
 name = "cloudflare-docker-proxy-staging"
-# route = { pattern = "docker-staging.libcuda.so", custom_domain = true }
+# route = { pattern = "not-docker-staging.libcuda.so", custom_domain = true }
 
 [env.staging.vars]
 MODE = "staging"
